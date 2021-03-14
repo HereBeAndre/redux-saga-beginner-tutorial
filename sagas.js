@@ -1,14 +1,14 @@
-import { all, put, takeEvery } from "redux-saga/effects";
+import { all, put, takeEvery, call } from "redux-saga/effects";
 
 export function* helloSaga() {
   console.log("Hello Saga!");
 }
 
-const delay = async (ms) => await ((res) => setTimeout(res, ms));
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
 // WORKER SAGA: it performs asynchronous increment task
-function* incrementAsync() {
-  yield delay(1000);
+export function* incrementAsync() {
+  yield call(delay, 1000);
   yield put({ type: "INCREMENT" });
 }
 
@@ -19,5 +19,5 @@ function* watchIncrementAsync() {
 
 // export only rootSaga as entry point to start all other sagas at once
 export default function* rootSaga() {
-  yield all([helloSaga(), incrementAsync()]);
+  yield all([helloSaga(), watchIncrementAsync()]);
 }
